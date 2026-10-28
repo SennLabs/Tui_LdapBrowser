@@ -1,0 +1,63 @@
+{
+  "default_profile": "corp-ad",
+  "mouse": true,
+  "search": {
+    "saved": [
+      { "name": "disabled accounts", "filter": "(&(objectCategory=person)(userAccountControl:1.2.840.113556.1.4.803:=2))" }
+    ]
+  },
+  "profiles": {
+    "corp-ad": {
+      "host": "dc01.example.local",
+      "port": 636,
+      "scheme": "ldaps",
+      "flavor": "ad",
+      "base_dn": "DC=example,DC=local",
+      "ca_cert": "/etc/ssl/certs/example-root-ca.pem",
+      "credentials": "corp-ad-reader",
+      "timeout_secs": 10,
+      "page_size": 500,
+      "size_limit": 5000,
+      "tree_child_limit": 1000,
+      "show_all_naming_contexts": true,
+      "search": {
+        "saved": [
+          { "name": "by department", "filter": "(&(objectClass=user)(department={q}))", "base": "OU=Staff,DC=example,DC=local" }
+        ]
+      },
+      "bookmarks": [
+        { "name": "Service accounts", "dn": "OU=Service Accounts,DC=example,DC=local" }
+      ],
+      "results": {
+        "columns": { "users": ["sAMAccountName", "mail", "department", "lastLogonTimestamp"] },
+        "sort": "lastLogonTimestamp:desc"
+      },
+      "export": { "dir": "~/ldap-exports" }
+    },
+    "corp-ad-lab": {
+      "host": "dc01.lab.example.local",
+      "scheme": "ldaps",
+      "insecure_skip_verify": true,
+      "credentials": "lab-admin"
+    },
+    "lldap": {
+      "host": "lldap.example.local",
+      "port": 6360,
+      "scheme": "ldaps",
+      "flavor": "lldap",
+      "base_dn": "dc=example,dc=local",
+      "credentials": "lldap-admin"
+    },
+    "openldap-dev": {
+      "host": "localhost",
+      "port": 389,
+      "scheme": "ldap",
+      "base_dn": "dc=example,dc=org",
+      "credentials": null,
+      "search": {
+        "user_filter": "(&(objectClass=inetOrgPerson)(|(uid=*{q}*)(cn=*{q}*)(mail=*{q}*)))",
+        "group_filter": "(&(objectClass=groupOfNames)(cn=*{q}*))"
+      }
+    }
+  }
+}
